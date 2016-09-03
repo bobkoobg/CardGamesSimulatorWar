@@ -35,7 +35,7 @@ public class Builder {
         Collections.shuffle( lc, new Random( seed ) );
     }
 
-    public List<Integer> getPlayerDeckByCardsIds() {
+    private List<Integer> get24UniqueCardIds() {
         List<Integer> cardIds = new ArrayList();
         ArrayList<Integer> fullIdList = new ArrayList();
         for ( int i = 0; i < 51; i++ ) {
@@ -49,11 +49,10 @@ public class Builder {
         return cardIds;
     }
 
-    public void getPlayersDecks( List<Card> cards, List<Integer> aCards,
-            Player a, Player b ) {
-
+    public void getPlayersDecks( List<Card> cards, Player a, Player b ) {
+        List<Integer> uc = get24UniqueCardIds();
         for ( int i = 0; i < cards.size(); i++ ) {
-            if ( aCards.contains( i ) ) {
+            if ( uc.contains( i ) ) {
                 a.addCard( cards.get( i ) );
             } else {
                 b.addCard( cards.get( i ) );

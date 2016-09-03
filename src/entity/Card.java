@@ -10,6 +10,10 @@ public class Card {
         this.color = color;
     }
 
+    public String getRank() {
+        return rank;
+    }
+
     @Override
     public String toString() {
         return rank + " of " + color;
