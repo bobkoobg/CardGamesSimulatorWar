@@ -7,6 +7,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import logic.War;
 
 public class Utils {
 
@@ -122,9 +125,14 @@ public class Utils {
 
         sb.append( "* Status : A (" )
                 .append( aStack.size() )
-                .append( ") vs B (" )
+                .append( " cards ) vs B (" )
                 .append( bStack.size() )
-                .append( ")\n" );
+                .append( " cards )\n* Loading cards..." );
+
+        System.out.println( sb.toString() );
+        sb.setLength( 0 );
+
+        sleeper( 1500 );
 
         for ( int i = 0; i < size; i++ ) {
 
@@ -133,15 +141,19 @@ public class Utils {
                         .append( "." )
                         .append( ((i + 1) < 10 ? " " : "") )
                         .append( aStack.get( i ).getAbbreviation() )
-                        .append( "\t" );
+                        .append( " - " )
+                        .append( aStack.get( i ).toString() )
+                        .append( "\t\t" );
             } else {
-                sb.append( "\t" );
+                sb.append( "\t\t\t\t" );
             }
             if ( i < bStackSize ) {
                 sb.append( (i + 1) )
                         .append( "." )
                         .append( ((i + 1) < 10 ? " " : "") )
                         .append( bStack.get( i ).getAbbreviation() )
+                        .append( " - " )
+                        .append( bStack.get( i ).toString() )
                         .append( "\n" );
             } else {
                 sb.append( "\n" );
@@ -156,5 +168,13 @@ public class Utils {
         Random rn = new Random();
         int cardId = rn.nextInt( enemyCards.size() );
         return enemyCards.get( cardId );
+    }
+
+    public void sleeper( long millis ) {
+        try {
+            Thread.sleep( millis );
+        } catch ( InterruptedException ex ) {
+            Logger.getLogger( War.class.getName() ).log( Level.SEVERE, null, ex );
+        }
     }
 }

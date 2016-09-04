@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import utility.Utils;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Scanner;
 
 public class War {
 
@@ -33,24 +32,24 @@ public class War {
     }
 
     private void gameplay() {
+        Scanner scanner = new Scanner( System.in );
 
-        int round = 1, result, random, warCount = 0, stackASize, stackBSize;
+        int round = 1, result, warCount = 0, stackASize, stackBSize;
         boolean isPlaying = true, isWar = false;
 
         Card cardA, cardB;
         List<Card> cardsAInWar, cardsBInWar;
 
         while ( isPlaying ) {
+            utilities.sleeper( 1500 );
             utilities.displayCards( a.getStack(), b.getStack() );
 
             /*
              * Take it slow, darling, take it slow
              */
-            try {
-                Thread.sleep( 100 );
-            } catch ( InterruptedException ex ) {
-                Logger.getLogger( War.class.getName() ).log( Level.SEVERE, null, ex );
-            }
+            //utilities.sleeper( 1000 );
+            System.out.println( "Press \"ENTER\" to continue..." );
+            scanner.nextLine();
 
             cardA = a.getStack().get( 0 );
             a.removeCard( cardA );
@@ -59,27 +58,27 @@ public class War {
 
             result = utilities.showoff( cardA, cardB );
 
-            sb.append( "##############################\n" )
-                    .append( "* Round " )
+            sb.append( "\n* Round " )
                     .append( round )
-                    .append( " - (A) " )
+                    .append( " - \n\t(A) " )
                     .append( cardA.getAbbreviation() )
                     .append( " - " )
                     .append( cardA.toString() )
-                    .append( " vs (B) " )
+                    .append( " \n\tvs \n\t(B) " )
                     .append( cardB.getAbbreviation() )
                     .append( " - " )
                     .append( cardB.toString() )
-                    .append( " => Winner is : " )
+                    .append( " => \n\t\tWinner is : " )
                     .append( result == -1
                                     ? "A with " + cardA.getAbbreviation()
                                     : result == 1
                                             ? "B with " + cardB.getAbbreviation()
                                             : "NOBODY ... WAR!" );
+
             System.out.println( sb.toString() );
             sb.setLength( 0 );
 
-            random = rn.nextInt( 1 );
+            utilities.sleeper( 1000 );
             if ( result == -1 ) {
                 theWinnerTakesItAll( a, cardA, cardB );
             } else if ( result == 1 ) {
@@ -90,14 +89,7 @@ public class War {
                 cardsBInWar = new ArrayList();
                 while ( isWar ) {
                     warCount++;
-                    if ( warCount > 1 ) {
-                        System.out.println( "BUTTERFLY" );
-                    }
-                    try {
-                        Thread.sleep( 1000 );
-                    } catch ( InterruptedException ex ) {
-                        Logger.getLogger( War.class.getName() ).log( Level.SEVERE, null, ex );
-                    }
+                    utilities.sleeper( 1000 );
 
                     stackASize = a.getStack().size();
                     stackBSize = b.getStack().size();
@@ -167,12 +159,22 @@ public class War {
                                     a.removeCard( enemyCard );
                                 }
                             }
+                            utilities.sleeper( 2000 );
                         }
                     }
-                    System.out.println( "cardsAInWar : " + cardsAInWar.size() + ", cardsBInWar : " + cardsBInWar.size() );
+
                     result = utilities.showoff( cardsAInWar.get( (3 * warCount) - 1 ), cardsBInWar.get( (3 * warCount) - 1 ) );
 
-                    sb.append( "* War result : " ).append( result );
+                    sb.append( "* War result : \n\tA's 3rd card is : " )
+                            .append( cardsAInWar.get( (3 * warCount) - 1 ) )
+                            .append( "\n\tB's 3rd card is : " )
+                            .append( cardsBInWar.get( (3 * warCount) - 1 ) )
+                            .append( " => \n\t\tWinner is : " )
+                            .append( result == -1
+                                            ? "A with " + cardsAInWar.get( (3 * warCount) - 1 ).getAbbreviation()
+                                            : result == 1
+                                                    ? "B with " + cardsBInWar.get( (3 * warCount) - 1 ).getAbbreviation()
+                                                    : "NOBODY ... WAR!" );
                     System.out.println( sb.toString() );
                     sb.setLength( 0 );
 
@@ -215,4 +217,5 @@ public class War {
             winner.addCard( cardA );
         }
     }
+
 }
