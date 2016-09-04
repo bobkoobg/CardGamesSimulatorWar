@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Player {
 
-    private String name;
+    private final String name;
     private List<Card> stack;
 
     public Player( String name ) {
