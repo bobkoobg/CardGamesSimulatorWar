@@ -15,19 +15,25 @@ public class War {
     StringBuilder sb = new StringBuilder();
     Random rn = new Random();
 
+    String func = "automatic";
+
     public static void main( String[] args ) {
-        new War().preparation();
+        new War().preparation( args );
     }
 
-    private void preparation() {
+    private void preparation( String[] args ) {
+        if ( args.length > 0 ) {
+            if ( args[ 0 ].equals( "manual" ) ) {
+                func = args[ 0 ];
+            }
+        }
+        System.out.println( "func is : " + func );
+
         utilities = new Utils();
         List<Player> p = utilities.getPlayersWithDecks( "A", "B" );
         a = p.get( 0 );
         b = p.get( 1 );
-//        for ( int i = 0; i < a.getStack().size(); i++ ) {
-//            System.out.println( "A:   " + a.getStack().get( i ).toString2() );
-//            System.out.println( "B:   " + b.getStack().get( i ).toString2() );
-//        }
+
         gameplay();
     }
 
@@ -47,10 +53,12 @@ public class War {
             /*
              * Take it slow, darling, take it slow
              */
-            //utilities.sleeper( 1000 );
-            System.out.println( "Press \"ENTER\" to continue..." );
-            scanner.nextLine();
-
+            if ( func.equals( "automatic" ) ) {
+                utilities.sleeper( 2000 );
+            } else {
+                System.out.println( "Press \"ENTER\" to continue..." );
+                scanner.nextLine();
+            }
             cardA = a.getStack().get( 0 );
             a.removeCard( cardA );
             cardB = b.getStack().get( 0 );
