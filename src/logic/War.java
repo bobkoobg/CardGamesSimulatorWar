@@ -2,6 +2,7 @@ package logic;
 
 import entity.Card;
 import entity.Player;
+import java.util.ArrayList;
 import utility.Utils;
 import java.util.List;
 import java.util.Random;
@@ -33,9 +34,12 @@ public class War {
 
     private void gameplay() {
 
-        int round = 1, result, random;
-        Card cardA, cardB, caw1, caw2, caw3, cbw1, cbw2, cbw3;
-        boolean isPlaying = true;
+        int round = 1, result, random, warCount = 0, stackASize, stackBSize;
+        boolean isPlaying = true, isWar = false;
+
+        Card cardA, cardB;
+        List<Card> cardsAInWar, cardsBInWar;
+
         while ( isPlaying ) {
             utilities.displayCards( a.getStack(), b.getStack() );
 
@@ -81,69 +85,79 @@ public class War {
             } else if ( result == 1 ) {
                 theWinnerTakesItAll( b, cardA, cardB );
             } else {
-                try {
-                    Thread.sleep( 1000 );
-                } catch ( InterruptedException ex ) {
-                    Logger.getLogger( War.class.getName() ).log( Level.SEVERE, null, ex );
-                }
-                if ( a.getStack().size() < 3 || b.getStack().size() < 3 ) {
-                    break;
-                }
-                caw1 = a.getStack().get( 0 );
-                a.removeCard( caw1 );
-                caw2 = a.getStack().get( 0 );
-                a.removeCard( caw2 );
-                caw3 = a.getStack().get( 0 );
-                a.removeCard( caw3 );
+                isWar = true;
+                cardsAInWar = new ArrayList();
+                cardsBInWar = new ArrayList();
+                while ( isWar ) {
+                    warCount++;
 
-                cbw1 = b.getStack().get( 0 );
-                b.removeCard( cbw1 );
-                cbw2 = b.getStack().get( 0 );
-                b.removeCard( cbw2 );
-                cbw3 = b.getStack().get( 0 );
-                b.removeCard( cbw3 );
+                    try {
+                        Thread.sleep( 1000 );
+                    } catch ( InterruptedException ex ) {
+                        Logger.getLogger( War.class.getName() ).log( Level.SEVERE, null, ex );
+                    }
 
-                sb.append( "A : 1 " )
-                        .append( caw1.getAbbreviation() )
-                        .append( ", 2 " )
-                        .append( caw2.getAbbreviation() )
-                        .append( ", 3 " )
-                        .append( caw3.getAbbreviation() )
-                        .append( "B : 1 " )
-                        .append( cbw1.getAbbreviation() )
-                        .append( ", 2 " )
-                        .append( cbw2.getAbbreviation() )
-                        .append( ", 3 " )
-                        .append( cbw3.getAbbreviation() )
-                        .append( "\n" );
+                    stackASize = a.getStack().size();
+                    stackBSize = b.getStack().size();
+                    for ( int x = 0; x < 2; x++ ) {
+                        for ( int y = 0; y < 3; y++ ) {
+                            if ( x == 0 ) {
+                                if ( stackASize > 0 ) {
+                                    System.out.println( "Actually I am : " + a.getStack().get( 0 ).getAbbreviation() );
+                                    cardsAInWar.add( a.getStack().get( 0 ) );
+                                    sb.append( "A - " )
+                                            .append( (y + 1) )
+                                            .append( " =>" )
+                                            .append( a.getStack().get( 0 ).getAbbreviation() );
+                                    System.out.println( sb.toString() );
+                                    sb.setLength( 0 );
 
-                result = utilities.showoff( caw3, cbw3 );
+                                    a.removeCard( cardsAInWar.get( 0 ) );
+                                    stackASize--;
 
-                sb.append( "War result : " ).append( result );
-                System.out.println( sb.toString() );
-                sb.setLength( 0 );
+                                } else {
+                                    System.exit( 0 );
+                                }
+                            } else {
+                                if ( stackBSize > 0 ) {
+                                    cardsBInWar.add( b.getStack().get( 0 ) );
+                                    sb.append( "B - " )
+                                            .append( (y + 1) )
+                                            .append( " =>" )
+                                            .append( b.getStack().get( 0 ).getAbbreviation() );
+                                    System.out.println( sb.toString() );
+                                    sb.setLength( 0 );
 
-                if ( result == -1 ) {
-                    a.addCard( cardA );
-                    a.addCard( cardB );
-                    a.addCard( caw1 );
-                    a.addCard( caw2 );
-                    a.addCard( caw3 );
-                    a.addCard( cbw1 );
-                    a.addCard( cbw2 );
-                    a.addCard( cbw3 );
-                } else if ( result == 1 ) {
-                    b.addCard( cardA );
-                    b.addCard( cardB );
-                    b.addCard( caw1 );
-                    b.addCard( caw2 );
-                    b.addCard( caw3 );
-                    b.addCard( cbw1 );
-                    b.addCard( cbw2 );
-                    b.addCard( cbw3 );
-                }
-                if ( a.getStack().size() < 3 || b.getStack().size() < 3 ) {
-                    break;
+                                    b.removeCard( cardsBInWar.get( 0 ) );
+                                    stackBSize--;
+                                } else {
+                                    System.exit( 0 );
+                                }
+                            }
+                        }
+                    }
+                    System.out.println( "cardsAInWar : " + cardsAInWar.size() + ", cardsBInWar : " + cardsBInWar.size() );
+                    result = utilities.showoff( cardsAInWar.get( (3 * warCount) - 1 ), cardsBInWar.get( (3 * warCount) - 1 ) );
+
+                    sb.append( "* War result : " ).append( result );
+                    System.out.println( sb.toString() );
+                    sb.setLength( 0 );
+
+                    if ( result == -1 ) {
+                        for ( int i = warCount * 3; i < cardsAInWar.size(); i++ ) {
+                            a.addCard( cardsAInWar.get( i ) );
+                            a.addCard( cardsBInWar.get( i ) );
+                        }
+                        isWar = false;
+                        warCount = 0;
+                    } else if ( result == 1 ) {
+                        for ( int i = warCount * 3; i < cardsAInWar.size(); i++ ) {
+                            b.addCard( cardsAInWar.get( i ) );
+                            b.addCard( cardsBInWar.get( i ) );
+                        }
+                        isWar = false;
+                        warCount = 0;
+                    }
                 }
             }
 
