@@ -151,4 +151,10 @@ public class Utils {
         System.out.println( sb.toString() );
         sb.setLength( 0 );
     }
+
+    public Card getRandomCardFromEnemyDeck( List<Card> enemyCards ) {
+        Random rn = new Random();
+        int cardId = rn.nextInt( enemyCards.size() );
+        return enemyCards.get( cardId );
+    }
 }

@@ -90,7 +90,9 @@ public class War {
                 cardsBInWar = new ArrayList();
                 while ( isWar ) {
                     warCount++;
-
+                    if ( warCount > 1 ) {
+                        System.out.println( "BUTTERFLY" );
+                    }
                     try {
                         Thread.sleep( 1000 );
                     } catch ( InterruptedException ex ) {
@@ -114,11 +116,24 @@ public class War {
                                     System.out.println( sb.toString() );
                                     sb.setLength( 0 );
 
-                                    a.removeCard( cardsAInWar.get( y * warCount ) );
+                                    a.removeCard( a.getStack().get( 0 ) );
                                     stackASize--;
 
                                 } else {
-                                    System.exit( 0 );
+                                    Card enemyCard = utilities.getRandomCardFromEnemyDeck( b.getStack() );
+
+                                    cardsAInWar.add( enemyCard );
+                                    sb.append( "A (takes a card from B) - " )
+                                            .append( (y + 1) )
+                                            .append( " =>" )
+                                            .append( enemyCard.getAbbreviation() )
+                                            .append( " ( " )
+                                            .append( enemyCard.toString() )
+                                            .append( " )" );
+                                    System.out.println( sb.toString() );
+                                    sb.setLength( 0 );
+
+                                    b.removeCard( enemyCard );
                                 }
                             } else {
                                 if ( stackBSize > 0 ) {
@@ -133,10 +148,23 @@ public class War {
                                     System.out.println( sb.toString() );
                                     sb.setLength( 0 );
 
-                                    b.removeCard( cardsBInWar.get( y * warCount ) );
+                                    b.removeCard( b.getStack().get( 0 ) );
                                     stackBSize--;
                                 } else {
-                                    System.exit( 0 );
+                                    Card enemyCard = utilities.getRandomCardFromEnemyDeck( a.getStack() );
+
+                                    cardsBInWar.add( enemyCard );
+                                    sb.append( "B (takes a card from A) - " )
+                                            .append( (y + 1) )
+                                            .append( " =>" )
+                                            .append( enemyCard.getAbbreviation() )
+                                            .append( " ( " )
+                                            .append( enemyCard.toString() )
+                                            .append( " )" );
+                                    System.out.println( sb.toString() );
+                                    sb.setLength( 0 );
+
+                                    a.removeCard( enemyCard );
                                 }
                             }
                         }
@@ -149,8 +177,7 @@ public class War {
                     sb.setLength( 0 );
 
                     if ( result == -1 ) {
-                        System.out.println( "U VORK ? wcX3 : " + warCount * 3 + " size? " + cardsAInWar.size() );
-                        for ( int i = (warCount * 3) - 3; i < cardsAInWar.size(); i++ ) {
+                        for ( int i = 0; i < cardsAInWar.size(); i++ ) {
                             a.addCard( cardsAInWar.get( i ) );
                             a.addCard( cardsBInWar.get( i ) );
                         }
@@ -158,9 +185,7 @@ public class War {
                         isWar = false;
                         warCount = 0;
                     } else if ( result == 1 ) {
-                        System.out.println( "U VORK ? wcX3 : " + warCount * 3 + " size? " + cardsAInWar.size() );
-                        for ( int i = (warCount * 3) - 3; i < cardsAInWar.size(); i++ ) {
-                            System.out.println( "Yeeez " + warCount * 3 );
+                        for ( int i = 0; i < cardsAInWar.size(); i++ ) {
                             b.addCard( cardsAInWar.get( i ) );
                             b.addCard( cardsBInWar.get( i ) );
                         }
@@ -176,6 +201,8 @@ public class War {
             }
             round++;
         }
+        System.out.println( "Final results :" );
+        utilities.displayCards( a.getStack(), b.getStack() );
     }
 
     private void theWinnerTakesItAll( Player winner, Card cardA, Card cardB ) {
