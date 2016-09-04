@@ -103,16 +103,18 @@ public class War {
                         for ( int y = 0; y < 3; y++ ) {
                             if ( x == 0 ) {
                                 if ( stackASize > 0 ) {
-                                    System.out.println( "Actually I am : " + a.getStack().get( 0 ).getAbbreviation() );
                                     cardsAInWar.add( a.getStack().get( 0 ) );
                                     sb.append( "A - " )
                                             .append( (y + 1) )
                                             .append( " =>" )
-                                            .append( a.getStack().get( 0 ).getAbbreviation() );
+                                            .append( a.getStack().get( 0 ).getAbbreviation() )
+                                            .append( " ( " )
+                                            .append( a.getStack().get( 0 ).toString() )
+                                            .append( " )" );
                                     System.out.println( sb.toString() );
                                     sb.setLength( 0 );
 
-                                    a.removeCard( cardsAInWar.get( 0 ) );
+                                    a.removeCard( cardsAInWar.get( y * warCount ) );
                                     stackASize--;
 
                                 } else {
@@ -124,11 +126,14 @@ public class War {
                                     sb.append( "B - " )
                                             .append( (y + 1) )
                                             .append( " =>" )
-                                            .append( b.getStack().get( 0 ).getAbbreviation() );
+                                            .append( b.getStack().get( 0 ).getAbbreviation() )
+                                            .append( " ( " )
+                                            .append( b.getStack().get( 0 ).toString() )
+                                            .append( " )" );
                                     System.out.println( sb.toString() );
                                     sb.setLength( 0 );
 
-                                    b.removeCard( cardsBInWar.get( 0 ) );
+                                    b.removeCard( cardsBInWar.get( y * warCount ) );
                                     stackBSize--;
                                 } else {
                                     System.exit( 0 );
@@ -144,17 +149,22 @@ public class War {
                     sb.setLength( 0 );
 
                     if ( result == -1 ) {
-                        for ( int i = warCount * 3; i < cardsAInWar.size(); i++ ) {
+                        System.out.println( "U VORK ? wcX3 : " + warCount * 3 + " size? " + cardsAInWar.size() );
+                        for ( int i = (warCount * 3) - 3; i < cardsAInWar.size(); i++ ) {
                             a.addCard( cardsAInWar.get( i ) );
                             a.addCard( cardsBInWar.get( i ) );
                         }
+                        theWinnerTakesItAll( a, cardA, cardB );
                         isWar = false;
                         warCount = 0;
                     } else if ( result == 1 ) {
-                        for ( int i = warCount * 3; i < cardsAInWar.size(); i++ ) {
+                        System.out.println( "U VORK ? wcX3 : " + warCount * 3 + " size? " + cardsAInWar.size() );
+                        for ( int i = (warCount * 3) - 3; i < cardsAInWar.size(); i++ ) {
+                            System.out.println( "Yeeez " + warCount * 3 );
                             b.addCard( cardsAInWar.get( i ) );
                             b.addCard( cardsBInWar.get( i ) );
                         }
+                        theWinnerTakesItAll( b, cardA, cardB );
                         isWar = false;
                         warCount = 0;
                     }
